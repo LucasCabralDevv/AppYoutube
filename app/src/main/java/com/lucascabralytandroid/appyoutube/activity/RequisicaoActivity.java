@@ -104,14 +104,13 @@ public class RequisicaoActivity extends AppCompatActivity {
         ).enqueue(new Callback<Resultado>() {
             @Override
             public void onResponse(Call<Resultado> call, Response<Resultado> response) {
-                Log.d("Resultado", "resultado: " + response.toString());
 
+                Log.d("Resultado", "resultado: " + response.toString());
                 if (response.isSuccessful()) {
 
                     resultado = response.body();
                     videos = resultado.videos;
                     configurarRecyclerView();
-
                     Log.d("ItemTitle", "resultado: " + resultado.videos.get(0).snippet.title);
                 }
             }
