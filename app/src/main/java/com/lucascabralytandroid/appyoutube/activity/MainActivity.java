@@ -16,8 +16,8 @@ import com.lucascabralytandroid.appyoutube.adapter.AdapterVideo;
 import com.lucascabralytandroid.appyoutube.api.YoutubeService;
 import com.lucascabralytandroid.appyoutube.helper.RetrofitConfig;
 import com.lucascabralytandroid.appyoutube.helper.YoutubeConfig;
+import com.lucascabralytandroid.appyoutube.model.Item;
 import com.lucascabralytandroid.appyoutube.model.Resultado;
-import com.lucascabralytandroid.appyoutube.model.Video;
 import com.miguelcatalan.materialsearchview.MaterialSearchView;
 
 import java.util.ArrayList;
@@ -34,7 +34,8 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView recyclerVideos;
     private MaterialSearchView searchView;
 
-    private List<Video> videos = new ArrayList<>();
+    private List<Item> videos = new ArrayList<>();
+    private Resultado resultado;
     private AdapterVideo adapterVideo;
 
     // Retrofit
@@ -57,12 +58,8 @@ public class MainActivity extends AppCompatActivity {
         toolbar.setTitle("Youtube");
         setSupportActionBar(toolbar);
 
-        // Configurando RecyclerView
+        // Recupera videos
         recuperarVideos();
-        adapterVideo = new AdapterVideo(videos, this);
-        recyclerVideos.setHasFixedSize(true);
-        recyclerVideos.setLayoutManager(new LinearLayoutManager(this));
-        recyclerVideos.setAdapter( adapterVideo );
 
         // Configura métodos para searchView
         searchView.setOnQueryTextListener(new MaterialSearchView.OnQueryTextListener() {
@@ -100,6 +97,15 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<Resultado> call, Response<Resultado> response) {
                 Log.d("Resultado", "resultado: " + response.toString());
+
+                if ( response.isSuccessful() ){
+
+                    resultado = response.body();
+                    videos = resultado.items;
+                    configurarRecyclerView();
+
+                    Log.d("ItemTitle", "resultado: " + resultado.items.get(0).snippet.title);
+                }
             }
 
             @Override
@@ -107,6 +113,14 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    public void configurarRecyclerView(){
+
+        adapterVideo = new AdapterVideo(videos, this);
+        recyclerVideos.setHasFixedSize(true);
+        recyclerVideos.setLayoutManager(new LinearLayoutManager(this));
+        recyclerVideos.setAdapter( adapterVideo );
 
     }
 
