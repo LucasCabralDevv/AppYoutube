@@ -8,7 +8,7 @@ public class Resultado {
 
     public PageInfo pageInfo;
 
-    public List<Item> items;
+    public List<Video> videos;
 
 
 }
