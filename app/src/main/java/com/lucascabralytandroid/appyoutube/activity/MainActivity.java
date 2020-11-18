@@ -5,25 +5,28 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.Adapter;
-import android.widget.Toast;
 
-import com.google.android.youtube.player.YouTubeBaseActivity;
-import com.google.android.youtube.player.YouTubeInitializationResult;
-import com.google.android.youtube.player.YouTubePlayer;
-import com.google.android.youtube.player.YouTubePlayerView;
 import com.lucascabralytandroid.appyoutube.R;
 import com.lucascabralytandroid.appyoutube.adapter.AdapterVideo;
+import com.lucascabralytandroid.appyoutube.api.YoutubeService;
+import com.lucascabralytandroid.appyoutube.helper.RetrofitConfig;
+import com.lucascabralytandroid.appyoutube.helper.YoutubeConfig;
+import com.lucascabralytandroid.appyoutube.model.Resultado;
 import com.lucascabralytandroid.appyoutube.model.Video;
 import com.miguelcatalan.materialsearchview.MaterialSearchView;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -34,6 +37,9 @@ public class MainActivity extends AppCompatActivity {
     private List<Video> videos = new ArrayList<>();
     private AdapterVideo adapterVideo;
 
+    // Retrofit
+    private Retrofit retrofit;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,6 +48,9 @@ public class MainActivity extends AppCompatActivity {
         //Iniciar componentes
         recyclerVideos = findViewById(R.id.recyclerVideos);
         searchView = findViewById(R.id.searchView);
+
+        // Configurações iniciais
+        retrofit = RetrofitConfig.getRetrofit();
 
         // Configurando Toolbar
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -82,13 +91,22 @@ public class MainActivity extends AppCompatActivity {
 
     private void recuperarVideos(){
 
-        Video video1 = new Video();
-        video1.setTitulo("Vídeo 1 muito legal");
-        videos.add(video1);
+        YoutubeService youtubeService = retrofit.create( YoutubeService.class );
 
-        Video video2 = new Video();
-        video2.setTitulo("Vídeo 2 muito interessante");
-        videos.add(video2);
+        youtubeService.recuperarVideos(
+            "snippet", "date", "20",
+                 YoutubeConfig.YOUTUBE_API_KEY, YoutubeConfig.CANAL_ID
+        ).enqueue(new Callback<Resultado>() {
+            @Override
+            public void onResponse(Call<Resultado> call, Response<Resultado> response) {
+                Log.d("Resultado", "resultado: " + response.toString());
+            }
+
+            @Override
+            public void onFailure(Call<Resultado> call, Throwable t) {
+
+            }
+        });
 
     }
 
