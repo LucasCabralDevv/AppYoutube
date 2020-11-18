@@ -4,9 +4,6 @@ import com.lucascabralytandroid.appyoutube.model.Resultado;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
-import retrofit2.http.PATCH;
-import retrofit2.http.Part;
-import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 public interface YoutubeService {
@@ -18,7 +15,8 @@ public interface YoutubeService {
             @Query("order") String order,
             @Query("maxResults") String maxResults,
             @Query("key") String key,
-            @Query("channelId") String channelId
+            @Query("channelId") String channelId,
+            @Query("q") String q
     );
 
 
@@ -30,6 +28,7 @@ public interface YoutubeService {
     &maxResults=20
     &key=AIzaSyB69fW6BK83Wkak-_ndgtmJttJyWgs9WJU
     &channelId=UCVHFbqXqoYvEWM1Ddxl0QDg
+    &q=Android+Developers
 
     // https://www.googleapis.com/youtube/v3/search?part=snippet&order=date&maxResults=20&key=AIzaSyB69fW6BK83Wkak-_ndgtmJttJyWgs9WJU&channelId=UCVHFbqXqoYvEWM1Ddxl0QDg
 
